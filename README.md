@@ -1,5 +1,8 @@
 # Japanese-Song-Romaji
 The fastest way to know how to sing a Japanese song in the world.
+
+This result is based on translate.google.com.
+
 ## Requirements
 ### 1.python packages
 - selenium
@@ -10,6 +13,7 @@ The fastest way to know how to sing a Japanese song in the world.
 Download from [here](https://www.google.cn/intl/zh-CN/chrome/)
 #### for ubuntu
 sudo wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+
 sudo dpkg -i google-chrome*
 ### 3.chromedriver
 Download from [here](http://npm.taobao.org/mirrors/chromedriver/)
