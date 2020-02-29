@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import time
 import random
+from copy import deepcopy
 
 
 class RomajierGetter:
@@ -31,23 +32,23 @@ class RomajierGetter:
 
         self.input_object = self.driver.find_element_by_id('source')
         self.correction_object = self.driver.find_element_by_xpath('//*[@id="spelling-correction"]')
-        self.exchange_button = self.driver.find_element_by_xpath(
-                '/html/body/div[2]/div[1]/div[3]/div[1]/div[1]/div[1]/div[1]/div[3]/div')
+        #self.exchange_button = self.driver.find_element_by_xpath(
+        #        '/html/body/div[2]/div[1]/div[3]/div[1]/div[1]/div[1]/div[1]/div[3]/div')
 
         if self.input_object is None:
             print('ERROR: cannot find textarea')
             exit()
         self.output_object = self.driver.find_element_by_xpath(
-            '/html/body/div[2]/div[1]/div[3]/div[1]/div[1]/div[1]/div[2]/div/div/div[3]/div[1]')
+            '/html/body/div[2]/div[2]/div[1]/div[3]/div[1]/div[1]/div[1]/div[2]/div/div/div[3]/div[1]')
         if self.output_object is None:
             print('ERROR:cannot find output element')
             exit()
         if self.correction_object is None:
             print('ERROR: cannot find correction object')
             exit()
-        if self.exchange_button is None:
-            print('ERROR: cannot find exchange button')
-            exit()
+        # if self.exchange_button is None:
+        #     print('ERROR: cannot find exchange button')
+        #     exit()
         print('Google translate ready.Putting in lrc...')
 
     def refresh(self):
@@ -75,9 +76,9 @@ class RomajierGetter:
             sleep_time = self.random_sleep(1, 2)
             time_past += sleep_time # 记录流逝时间
             if time_past > time_threshold: # 如果卡了，点击两次交换语言
-                self.exchange_button.click()
+                # self.exchange_button.click()
                 self.random_sleep(1, 2)
-                self.exchange_button.click()
+                # self.exchange_button.click()
                 time_past = 0
             romaji = self.output_object.text
             # 万一不是日语的话
@@ -101,6 +102,16 @@ class RomajierGetter:
                 romaji = self.output_object.text
         return romaji
 
+    def replace_o_with_wo(self, sentence):
+        # 三种情况，前后都是空格，第一个是o第二个是空格，最后一个是o，倒数第二个是空格
+        result = deepcopy(sentence)
+        result = result.replace(' o ', ' wo ')
+        if len(result) >= 2 and result[0] == 'O' and result[1] == ' ':
+            result = 'Wo' + result[1:]
+        if len(result) >= 2 and result[-1] == 'o' and result[-2] == ' ':
+            result = result[:-1] + 'wo'
+        return result
+
     def get_multi_sentences_romaji(self, sentences):
         print('Getting romajis...')
         sentences_str = ''
@@ -111,6 +122,12 @@ class RomajierGetter:
         romajis = romaji_str.split('|')
         for i in range(len(romajis)):
             romajis[i] = romajis[i].strip().capitalize()
+        # 去掉没用的字符
+        for i in range(len(romajis)):
+            romajis[i] = romajis[i].replace('-', ' ')
+            romajis[i] = romajis[i].replace('`', '')
+            romajis[i] = self.replace_o_with_wo(romajis[i])
+            romajis[i] = romajis[i].capitalize()
         print('Done')
         return romajis
 
@@ -120,11 +137,7 @@ class RomajierGetter:
 
 if __name__ == '__main__':
     romajier = RomajierGetter()
-    #print(romajier.get_romaji('ぬるい平穏を ばっさリ切リ捨てて'))
-    sentences = ['スロイド (Slöjd) - 初音ミク (初音未来)', 'スロイド (Slöjd) - 初音ミク (初音未来)',
-                 '青すぎる空に', '君を見ていました', '羊雲の下']
-    print(romajier.get_multi_sentences_romaji(sentences))
-    # romajier.quit()
+    romajier.replace_o_with_wo()
 
 
 

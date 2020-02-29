@@ -36,9 +36,22 @@ def get_lrc_from_lrc_str(lrc_str):
     return sentences
 
 
+def is_alpha(c):
+    alphabet = 'abcdefghijklmnopqrstuvwxyz'
+    return c in alphabet
+
+
+def has_space_char(romaji):
+    for i in range(len(romaji) - 1):
+        if romaji[i] == ' ' and not is_alpha(romaji[i + 1]):
+            return True
+    return False
+
+
 def separate_a_romaji(romaji):
     result = ''
-    vowels = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U', 'ī', 'ō', 'ū']
+    vowels = ['a', 'e', 'i', 'ē', 'o', 'u', 'A', 'E', 'I', 'O', 'U', 'ī', 'ō', 'ū']
+
     i = 0
     while 1:
         if i > len(romaji) - 1:
@@ -47,17 +60,35 @@ def separate_a_romaji(romaji):
             if i + j > len(romaji) - 1:
                 i = i + j + 1
                 break
-            if romaji[i + j] == 'n' and i + j + 1 < len(romaji) and \
-                    romaji[i + j + 1] not in vowels and romaji[i + j + 1] != 'y':
-                result += 'n' + ' '
+            elif romaji[i + j] in vowels:
+                result += romaji[i:i + j + 1]
+                if i + j + 1 < len(romaji) and romaji[i + j + 1] not in vowels:
+                    result += ' '
                 i = i + j + 1
                 break
-            if romaji[i + j] in vowels:
-                result += romaji[i:i + j + 1] + ' '
+            if not is_alpha(romaji[i + j]):
+                result += romaji[i:i + j + 1]
                 i = i + j + 1
                 break
-    if len(romaji) > 0 and romaji[-1] == 'n':
-        result += 'n'
+    # n
+    result = list(result)
+    if len(result) > 1:
+        for i in range(1, len(result) - 1):
+            if result[i - 1] == ' ' and result[i] == 'n' and result[i + 1] not in vowels:
+                result[i - 1] = 'n'
+                result[i] = ' '
+    result = ''.join(result)
+
+    # replace_dict = {'  ': ' ', ' -': '-', ' \'': '\''}
+    # for key in replace_dict.keys():
+    #     while key in result:
+    #         result = result.replace(key, replace_dict[key])
+    while has_space_char(result):
+        for i in range(len(result) - 1):
+            if result[i] == ' ' and not is_alpha(result[i + 1]):
+                result = result[:i] + result[i + 1:]
+                break
+
     return result
 
 
@@ -119,3 +150,7 @@ def romaji_to_pinyin(romajis):
         if len(pinyin[i]) >= 2:
             pinyin[i] = pinyin[i][0].upper() + pinyin[i][1:]
     return pinyin
+
+
+if __name__ == '__main__':
+    print(separate_a_romaji('Min\'na kitto akogarete iru'))

@@ -65,7 +65,7 @@ class LyricsGetter:
 if __name__ == '__main__':
     lyric_getter = LyricsGetter()
     lrc = lyric_getter.get_lyrics_from_url(
-                'https://music.163.com/song?id=34040109')
+                'https://music.163.com/song?id=34040109&userid=398697337')
     print(lrc)
     # print(name_singer)
     # lyric_getter.get_song_list_from_url(
