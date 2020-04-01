@@ -126,6 +126,12 @@ class RomajierGetter:
         for i in range(len(romajis)):
             romajis[i] = romajis[i].replace('-', ' ')
             romajis[i] = romajis[i].replace('`', '')
+            romajis[i] = romajis[i].replace('dzu', 'zu')
+            romajis[i] = romajis[i].replace('ō', 'ou')
+            romajis[i] = romajis[i].replace('ū', 'uu')
+            romajis[i] = romajis[i].replace('ī', 'ii')
+            romajis[i] = romajis[i].replace('\r\n\r\n', '\r\n')
+            romajis[i] = romajis[i].replace('\'', '')
             romajis[i] = self.replace_o_with_wo(romajis[i])
             romajis[i] = romajis[i].capitalize()
         print('Done')
