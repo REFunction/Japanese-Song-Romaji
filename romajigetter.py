@@ -127,6 +127,7 @@ class RomajierGetter:
             romajis[i] = romajis[i].replace('-', ' ')
             romajis[i] = romajis[i].replace('`', '')
             romajis[i] = romajis[i].replace('dzu', 'zu')
+            romajis[i] = romajis[i].replace('tchi', 'chi')
             romajis[i] = romajis[i].replace('ō', 'ou')
             romajis[i] = romajis[i].replace('ū', 'uu')
             romajis[i] = romajis[i].replace('ī', 'ii')
