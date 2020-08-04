@@ -29,10 +29,11 @@ class LyricsGetter:
 
     def get_name_singer_from_url(self, url):
         result = requests.get(url, headers=self.headers, cookies=self.cookie_dict).text
-        print(result)
         result = result.split('title')[1]
+
         result = result[1:]
         result = result[: result.find(' - 单曲 - 网易云音乐')]
+        result = result.replace(' - ', '-')
         return result
 
     def get_lyrics_from_url(self, url):
@@ -62,11 +63,14 @@ class LyricsGetter:
         print('Totally', len(ids), 'songs')
         return ids, song_names
 
+
 if __name__ == '__main__':
     lyric_getter = LyricsGetter()
-    lrc = lyric_getter.get_lyrics_from_url(
-                'https://music.163.com/song?id=34040109&userid=398697337')
-    print(lrc)
+    # lrc = lyric_getter.get_lyrics_from_url(
+    #             'https://music.163.com/song?id=34040109&userid=398697337')
+    # print(lrc)
+    print(lyric_getter.get_name_singer_from_url('https://music.163.com/song?id=466794934&userid=398697337'))
+
     # print(name_singer)
     # lyric_getter.get_song_list_from_url(
     #                    'https://music.163.com/playlist?id=2665979377')

@@ -1,5 +1,6 @@
 import argparse
 from backend import *
+from yahoo import get_romajis
 
 
 parser = argparse.ArgumentParser()
@@ -25,6 +26,8 @@ if lrc is None or len(lrc) == 0:
     exit()
 
 romajis = get_romaji(lrc)
+# romajis = get_romajis(lrc)
+name_singer = ''
 if args.separate:
     romajis = separate_romajis(romajis)
 if args.pinyin:
@@ -34,15 +37,25 @@ if args.pinyin:
 
 if args.output:
     file = open(args.output, 'w', encoding='utf-8')
-    for i in range(len(lrc)):
-        file.write(lrc[i] + '\n')
-        file.write(romajis[i] + '\n')
-    file.close()
-    print('romajis saved in', args.output)
-else:
-    # display
-    print('-----------------------------------------')
-    for i in range(len(lrc)):
-        print(lrc[i])
-        print(romajis[i])
+elif args.url:
+    name_singer = get_name_singer_from_url(args.url)
+    file = open(name_singer + '.txt', 'w', encoding='utf-8')
 
+else:
+    file = open('output.txt', 'w', encoding='utf-8')
+result = ''
+for i in range(len(lrc)):
+    result += lrc[i] + '\n'
+    result += romajis[i] + '\n'
+result = result.replace('\n\n', '\n')
+if len(result) >= 1 and result[-1] == '\n':
+    result = result[:-1]
+file.write(result)
+file.close()
+
+if args.output:
+    print('romajis saved in', args.output)
+elif args.url:
+    print('romajis saved in', name_singer + '.txt')
+else:
+    print('romajis saved in output.txt')

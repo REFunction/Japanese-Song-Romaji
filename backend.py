@@ -29,6 +29,12 @@ def get_lrc_from_txt_file(path):
     return lrc
 
 
+def get_name_singer_from_url(url):
+    lyric_getter = LyricsGetter()
+    name_singer = lyric_getter.get_name_singer_from_url(url)
+    return name_singer
+
+
 def get_lrc_from_lrc_str(lrc_str):
     sentences = lrc_str.split('\n')
     for i in range(len(sentences)):
@@ -37,7 +43,7 @@ def get_lrc_from_lrc_str(lrc_str):
 
 
 def is_alpha(c):
-    alphabet = 'abcdefghijklmnopqrstuvwxyz'
+    alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
     return c in alphabet
 
 
@@ -152,5 +158,17 @@ def romaji_to_pinyin(romajis):
     return pinyin
 
 
+def is_chinese(c):
+    if u'\u4e00' <= c <= u'\u9fa5':
+        return True
+    else:
+        return False
+
+
 if __name__ == '__main__':
-    print(separate_a_romaji('Min\'na kitto akogarete iru'))
+    # print(separate_a_romaji('Min\'na kitto akogarete iru'))
+    print(is_chinese('雨'))
+    print(is_chinese('涙'))
+    print(is_chinese('の'))
+    print(is_chinese('っ'))
+    print(is_chinese('だ'))
